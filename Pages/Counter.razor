@@ -5,58 +5,56 @@
 @using MatterHackers.Agg.VertexSource
 @using MatterHackers.VectorMath
 @using MatterHackers.Agg.SvgTools
+@using System.Diagnostics
 @inject IJSRuntime JSRuntime
 
 <pagetitle>Counter</pagetitle>
 
 <h1>Counter</h1>
 
-<p role="status">Current count: @currentCount @vector2</p>
+<p role="status">Current count: @currentCount @drawTimeMilliseconds</p>
 
-<svg width="400" height="400">
-    <path d="@pathData" stroke="black" fill="red"></path>
-</svg>
-
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button><br />
+<br />
 <canvas @ref="canvasRef" width="@imageWidth" height="@imageHeight"></canvas>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
 
 @code {
     private int currentCount = 0;
-    private string pathData = "M 100 100 C 200 200, 300 200, 400 100"; // Default path
-    private Vector2 vector2;
     private ElementReference canvasRef;
     private int imageWidth = 2;
     private int imageHeight = 2;
+    private Stopwatch quickTimerTime = Stopwatch.StartNew();
+    private double drawTimeMilliseconds;
+
+    ImageBuffer imageBuffer = null;
+    Graphics2D graphics2D = null;
 
     private async Task IncrementCount()
     {
+        var start = quickTimerTime.Elapsed.TotalMilliseconds;
+
         var vertexStorage = new VertexStorage();
-        vertexStorage.MoveTo(currentCount * 2, 0); // Start point changes with each click
-        vertexStorage.Curve4(100, 100, 200, 100, 290, 0); // Control points and end point
+        vertexStorage.MoveTo(currentCount * 2, 40); // Start point changes with each click
+        vertexStorage.Curve4(100, 100, 200, 100, 290, 40); // Control points and end point
 
-        using (new QuickTimer("Frame Update"))
+        var flattened = new FlattenCurves(vertexStorage);
+        var stroked = new Stroke(flattened, 4);
+
+        if (imageBuffer == null)
         {
-            var flattened = new FlattenCurves(vertexStorage);
-            var stroked = new Stroke(flattened, 4);
-
-            var hello = new TypeFacePrinter("Hello, world!", 24);
-            hello.Origin = new Vector2(100, 100);
-            pathData = hello.SvgDString();
-            pathData = stroked.SvgDString();
-
-            var imageBuffer = new ImageBuffer(400, 400);
-            var graphics2D = imageBuffer.NewGraphics2D();
-
-            graphics2D.Render(stroked, Color.Black);
-
-            await UpdateCanvas(imageBuffer);
+            imageBuffer = new ImageBuffer(800, 600);
+            graphics2D = imageBuffer.NewGraphics2D();
         }
 
-        var a = new Vector2(1, 2);
-        var b = new Vector2(3, 4);
-        vector2 = a + b; // Example vector addition, unrelated to SVG
+        graphics2D.Clear(Color.LightBlue);
+        graphics2D.Render(stroked, Color.Black);
+        graphics2D.DrawString($"Count: {currentCount}", new Vector2(10, 10));
+
+        await UpdateCanvas(imageBuffer);
+
         currentCount++;
+
+        drawTimeMilliseconds = quickTimerTime.Elapsed.TotalMilliseconds - start;
     }
 
     private async Task UpdateCanvas(ImageBuffer imageBuffer)

@@ -20,18 +20,6 @@
         <a class="dismiss">🗙</a>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>
-        window.updateCanvas = function (canvas, width, height, pixelData) {
-            var context = canvas.getContext('2d');
-            var imageData = context.createImageData(width, height);
-            var data = imageData.data;
-
-            for (var i = 0; i < pixelData.length; i++) {
-                data[i] = pixelData[i];
-            }
-
-            context.putImageData(imageData, 0, 0);
-        };
-    </script>
+    <script src="js/canvas_helper.js"></script>
 </body>
 </html>
