@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>BlazorApp1</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="BlazorApp1.styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div id="app">Loading...</div>
+
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        window.updateCanvas = function (canvas, width, height, pixelData) {
+            var context = canvas.getContext('2d');
+            var imageData = context.createImageData(width, height);
+            var data = imageData.data;
+
+            for (var i = 0; i < pixelData.length; i++) {
+                data[i] = pixelData[i];
+            }
+
+            context.putImageData(imageData, 0, 0);
+        };
+    </script>
+</body>
+</html>

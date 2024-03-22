@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp1", "BlazorApp1.csproj", "{6C3562FA-B91E-4210-BB88-9FCC2AE349BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VectorMath", "..\MCCentral\MatterControl\Submodules\agg-sharp\VectorMath\VectorMath.csproj", "{8AEFA536-50A0-4667-A474-578B5620DC6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "agg-sharp", "agg-sharp", "{F54AECDA-60FA-4181-BE82-1B185677C1F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Typography.One", "..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.One\Typography.One.csproj", "{188818EE-41F2-437F-B17C-915FF595DD05}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Typography", "Typography", "{3EED8C95-6C8B-4003-902A-6D9D13C9C1A7}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Typography.OpenFont", "..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.OpenFont\Typography.OpenFont.shproj", "{235A071B-8D06-40AE-A5C5-B1CE59715EE9}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Typography.GlyphLayout", "..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.GlyphLayout\Typography.GlyphLayout.shproj", "{D8861CF8-C506-472B-8A57-632BD6CA6496}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Agg", "..\MCCentral\MatterControl\Submodules\agg-sharp\agg\Agg.csproj", "{A294E6FD-A9A0-4866-A836-F66F5E6221A8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C3562FA-B91E-4210-BB88-9FCC2AE349BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C3562FA-B91E-4210-BB88-9FCC2AE349BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C3562FA-B91E-4210-BB88-9FCC2AE349BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C3562FA-B91E-4210-BB88-9FCC2AE349BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AEFA536-50A0-4667-A474-578B5620DC6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AEFA536-50A0-4667-A474-578B5620DC6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AEFA536-50A0-4667-A474-578B5620DC6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AEFA536-50A0-4667-A474-578B5620DC6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{188818EE-41F2-437F-B17C-915FF595DD05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{188818EE-41F2-437F-B17C-915FF595DD05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{188818EE-41F2-437F-B17C-915FF595DD05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{188818EE-41F2-437F-B17C-915FF595DD05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A294E6FD-A9A0-4866-A836-F66F5E6221A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A294E6FD-A9A0-4866-A836-F66F5E6221A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A294E6FD-A9A0-4866-A836-F66F5E6221A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A294E6FD-A9A0-4866-A836-F66F5E6221A8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8AEFA536-50A0-4667-A474-578B5620DC6B} = {F54AECDA-60FA-4181-BE82-1B185677C1F4}
+		{188818EE-41F2-437F-B17C-915FF595DD05} = {3EED8C95-6C8B-4003-902A-6D9D13C9C1A7}
+		{3EED8C95-6C8B-4003-902A-6D9D13C9C1A7} = {F54AECDA-60FA-4181-BE82-1B185677C1F4}
+		{235A071B-8D06-40AE-A5C5-B1CE59715EE9} = {3EED8C95-6C8B-4003-902A-6D9D13C9C1A7}
+		{D8861CF8-C506-472B-8A57-632BD6CA6496} = {3EED8C95-6C8B-4003-902A-6D9D13C9C1A7}
+		{A294E6FD-A9A0-4866-A836-F66F5E6221A8} = {F54AECDA-60FA-4181-BE82-1B185677C1F4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {783EB3D0-5080-41E1-B262-66D6466CB3E7}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.GlyphLayout\Typography.GlyphLayout.projitems*{188818ee-41f2-437f-b17c-915ff595dd05}*SharedItemsImports = 5
+		..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.OpenFont\Typography.OpenFont.projitems*{188818ee-41f2-437f-b17c-915ff595dd05}*SharedItemsImports = 5
+		..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.OpenFont\Typography.OpenFont.projitems*{235a071b-8d06-40ae-a5c5-b1ce59715ee9}*SharedItemsImports = 13
+		..\MCCentral\MatterControl\Submodules\agg-sharp\Typography\Typography.GlyphLayout\Typography.GlyphLayout.projitems*{d8861cf8-c506-472b-8a57-632bd6ca6496}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal

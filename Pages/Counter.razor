@@ -1,0 +1,69 @@
+﻿@page "/counter"
+@using MatterHackers.Agg
+@using MatterHackers.Agg.Font
+@using MatterHackers.Agg.Image
+@using MatterHackers.Agg.VertexSource
+@using MatterHackers.VectorMath
+@using MatterHackers.Agg.SvgTools
+@inject IJSRuntime JSRuntime
+
+<pagetitle>Counter</pagetitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount @vector2</p>
+
+<svg width="400" height="400">
+    <path d="@pathData" stroke="black" fill="red"></path>
+</svg>
+
+<canvas @ref="canvasRef" width="@imageWidth" height="@imageHeight"></canvas>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private string pathData = "M 100 100 C 200 200, 300 200, 400 100"; // Default path
+    private Vector2 vector2;
+    private ElementReference canvasRef;
+    private int imageWidth = 2;
+    private int imageHeight = 2;
+
+    private async Task IncrementCount()
+    {
+        var vertexStorage = new VertexStorage();
+        vertexStorage.MoveTo(currentCount * 2, 0); // Start point changes with each click
+        vertexStorage.Curve4(100, 100, 200, 100, 290, 0); // Control points and end point
+
+        using (new QuickTimer("Frame Update"))
+        {
+            var flattened = new FlattenCurves(vertexStorage);
+            var stroked = new Stroke(flattened, 4);
+
+            var hello = new TypeFacePrinter("Hello, world!", 24);
+            hello.Origin = new Vector2(100, 100);
+            pathData = hello.SvgDString();
+            pathData = stroked.SvgDString();
+
+            var imageBuffer = new ImageBuffer(400, 400);
+            var graphics2D = imageBuffer.NewGraphics2D();
+
+            graphics2D.Render(stroked, Color.Black);
+
+            await UpdateCanvas(imageBuffer);
+        }
+
+        var a = new Vector2(1, 2);
+        var b = new Vector2(3, 4);
+        vector2 = a + b; // Example vector addition, unrelated to SVG
+        currentCount++;
+    }
+
+    private async Task UpdateCanvas(ImageBuffer imageBuffer)
+    {
+        var pixelData = imageBuffer.GetBuffer();
+        await JSRuntime.InvokeVoidAsync("updateCanvas", canvasRef, imageBuffer.Width, imageBuffer.Height, pixelData);
+        imageWidth = imageBuffer.Width;
+        imageHeight = imageBuffer.Height;
+    }
+}
