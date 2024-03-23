@@ -7,6 +7,7 @@
 @using MatterHackers.Agg.SvgTools
 @using System.Diagnostics
 @inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <pagetitle>Counter</pagetitle>
 
@@ -14,54 +15,129 @@
 
 <p role="status">Current count: @currentCount @drawTimeMilliseconds</p>
 
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button><br />
-<br />
 <canvas @ref="canvasRef" width="@imageWidth" height="@imageHeight"></canvas>
 
 @code {
     private int currentCount = 0;
     private ElementReference canvasRef;
-    private int imageWidth = 2;
-    private int imageHeight = 2;
+    private int imageWidth = 800; // Adjusted for better visibility
+    private int imageHeight = 600; // Adjusted for better visibility
     private Stopwatch quickTimerTime = Stopwatch.StartNew();
     private double drawTimeMilliseconds;
+    private double lastUpdateMs = 0;
+    private bool shouldStop = false;
 
     ImageBuffer imageBuffer = null;
     Graphics2D graphics2D = null;
 
-    private async Task IncrementCount()
+    private double[] point = new double[] { 0, 40, 100, 100, 200, 100, 290, 40 }; // Starting points
+    private double[] velocity = new double[] { 7.123, 2.5, 4.21, 5.31, 8.2, 4.111, 2, 3.457 }; // Initial velocities
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        StartAnimation();
+    }
+
+    private void StartAnimation()
+    {
+        _ = InvokeAsync(async () =>
+        {
+            while (!shouldStop)
+            {
+                IncrementCount();
+                await Task.Delay(1); // About 30 frames per second
+            }
+        });
+    }
+
+    private void IncrementCount()
     {
         var start = quickTimerTime.Elapsed.TotalMilliseconds;
 
+        UpdatePoints(); // Update the points for animation
+
         var vertexStorage = new VertexStorage();
-        vertexStorage.MoveTo(currentCount * 2, 40); // Start point changes with each click
-        vertexStorage.Curve4(100, 100, 200, 100, 290, 40); // Control points and end point
+        vertexStorage.MoveTo(point[0], point[1]); // Start point
+        vertexStorage.Curve4(point[2], point[3], point[4], point[5], point[6], point[7]); // Control points and end point
 
         var flattened = new FlattenCurves(vertexStorage);
         var stroked = new Stroke(flattened, 4);
 
         if (imageBuffer == null)
         {
-            imageBuffer = new ImageBuffer(800, 600);
+            imageBuffer = new ImageBuffer(imageWidth, imageHeight);
             graphics2D = imageBuffer.NewGraphics2D();
         }
 
-        graphics2D.Clear(Color.LightBlue);
-        graphics2D.Render(stroked, Color.Black);
-        graphics2D.DrawString($"Count: {currentCount}", new Vector2(10, 10));
+        // find the bounds of the stroked path
+        var bounds = vertexStorage.GetBounds();
+        bounds.Inflate(30);
 
-        await UpdateCanvas(imageBuffer);
+        graphics2D.Clear(Color.LightBlue);
+        graphics2D.Clear(bounds, Color.LightBlue);
+        graphics2D.Clear(new RectangleDouble(0, 5, 200, 30), Color.LightBlue);
+
+        graphics2D.Render(stroked, Color.Black);
+        // draw a cicle at each point
+        for (int i = 0; i < point.Length; i += 2)
+        {
+            graphics2D.Circle(point[i], point[i + 1], 5, Color.Red);
+        }
+
+        graphics2D.DrawString($"Count: {currentCount}, MS: {drawTimeMilliseconds:0.00}", new Vector2(10, 10));
+
+        UpdateCanvas(imageBuffer);
 
         currentCount++;
-
         drawTimeMilliseconds = quickTimerTime.Elapsed.TotalMilliseconds - start;
     }
+
+    private void UpdatePoints()
+    {
+        // Define the time per frame in milliseconds (1000 ms / 30 frames = 33.33 ms per frame)
+        const double timePerFrame = 1000.0 / 30.0;
+
+        // Calculate the total elapsed time since the last update in milliseconds
+        double elapsedTimeMs = quickTimerTime.Elapsed.TotalMilliseconds - lastUpdateMs;
+
+        // Calculate the number of frames that should have been updated based on elapsed time
+        int numberOfFramesSinceLastUpdate = (int)(elapsedTimeMs / timePerFrame);
+
+        // Only proceed if at least one frame's worth of time has passed
+        if (numberOfFramesSinceLastUpdate > 0)
+        {
+            for (int i = 0; i < numberOfFramesSinceLastUpdate; i++)
+            {
+                for (int j = 0; j < point.Length; j++)
+                {
+                    point[j] += velocity[j];
+                    // Reverse velocity if out of bounds
+                    if (point[j] > (j % 2 == 0 ? imageWidth : imageHeight) || point[j] < 0)
+                    {
+                        velocity[j] = -velocity[j];
+                    }
+                }
+            }
+
+            // Update the lastUpdateMs to reflect the updates,
+            // removing the time accounted for by the updates just performed
+            lastUpdateMs += numberOfFramesSinceLastUpdate * timePerFrame;
+        }
+
+        // If no updates are required, the function simply ends without changing the points,
+        // ensuring that updates only occur at the specified rate.
+    }
+
 
     private async Task UpdateCanvas(ImageBuffer imageBuffer)
     {
         var pixelData = imageBuffer.GetBuffer();
         await JSRuntime.InvokeVoidAsync("updateCanvas", canvasRef, imageBuffer.Width, imageBuffer.Height, pixelData);
-        imageWidth = imageBuffer.Width;
-        imageHeight = imageBuffer.Height;
+    }
+
+    public void Dispose()
+    {
+        shouldStop = true;
     }
 }
